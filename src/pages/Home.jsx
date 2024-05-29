@@ -2,6 +2,7 @@ import React from "react";
 import { useStore } from "../store";
 import Button from "../ui/Button";
 import AuthApi from "../api/AuthApi";
+import TestsList from "../components/TestsList";
 
 const Home = () => {
   const setIsAuth = useStore((state) => state.setIsAuth);
@@ -34,6 +35,7 @@ const Home = () => {
       <p>Имя и фамилия: {fullName}</p>
       <Button onClick={logout}>Выйти</Button>
       <Button onClick={testFunc}>Test</Button>
+      <TestsList />
     </div>
   );
 };

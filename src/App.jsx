@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import { useStore } from "./store";
 import Auth from "./pages/Auth";
 import AuthApi from "./api/AuthApi";
+import Test from "./pages/Test";
 
 const App = () => {
   const isAuth = useStore((state) => state.isAuth);
@@ -34,6 +35,7 @@ const App = () => {
   return (
     <Routes>
       <Route index element={<Home />} />
+      <Route path="/test/:testId" element={<Test />} />
     </Routes>
   );
 };
