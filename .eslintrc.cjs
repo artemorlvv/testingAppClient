@@ -20,4 +20,4 @@ module.exports = {
     "no-unused-vars": 0,
     "react/props-types": false,
   },
-}
+};
