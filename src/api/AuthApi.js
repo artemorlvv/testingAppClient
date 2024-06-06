@@ -22,16 +22,16 @@ class AuthApi {
   }
 
   auth() {
-    return authApi.get("/api/user/auth", { withCredentials: true });
+    return authApi.get("/api/user/auth", {}, { withCredentials: true });
   }
 
   logout() {
     localStorage.removeItem("token");
-    return authApi.get("/api/user/logout", { withCredentials: true });
+    return authApi.get("/api/user/logout", {}, { withCredentials: true });
   }
 
   test() {
-    return authApi.get("/api/user/test", { withCredentials: true });
+    return authApi.get("/api/user/test", {}, { withCredentials: true });
   }
 }
 

@@ -14,6 +14,12 @@ const QuestionsList = (props) => {
             "rounded-sm border bg-transparent text-black hover:bg-neutral-200",
             props.questionNumber === index &&
               "border-blue-400 bg-blue-400 text-white hover:bg-blue-400",
+            props.isFinished && props.correctOptions[q.id]
+              ? "outline outline-2 outline-green-400"
+              : null,
+            props.isFinished && !props.correctOptions[q.id]
+              ? "outline outline-2 outline-red-400"
+              : null,
           )}
         >{`Задача №${index + 1}`}</Button>
       ))}

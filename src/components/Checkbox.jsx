@@ -3,7 +3,7 @@ import React from "react";
 const Checkbox = (props) => {
   return (
     <button
-      className="flex items-center gap-2 rounded-sm px-4 py-2 transition-colors hover:bg-neutral-200"
+      className={`flex cursor-default items-center gap-2 rounded-sm px-4 py-2 transition-colors ${!props.disabled && "cursor-pointer hover:bg-neutral-200"} ${props.correct && "outline outline-2 outline-blue-400"}`}
       onClick={props.onClick}
     >
       <div

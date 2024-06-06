@@ -6,7 +6,10 @@ const useStore = create((set) => ({
   login: "",
   fullName: "",
   selectedOptions: {},
+  correctAnswers: {},
   clearSelectedOptions: () => set({ selectedOptions: {} }),
+  setSelectedOptions: (obj) => set({ selectedOptions: obj }),
+  setCorrectAnswers: (obj) => set({ correctAnswers: obj }),
   setRadioSelectedOption: (question_id, option_id) =>
     set((state) => ({
       selectedOptions: {

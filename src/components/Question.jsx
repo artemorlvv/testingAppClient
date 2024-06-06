@@ -6,6 +6,7 @@ import InputText from "../ui/InputText";
 
 const Question = (props) => {
   const selectedOptions = useStore((state) => state.selectedOptions);
+  const correctAnswers = useStore((state) => state.correctAnswers);
   const setRadioSelectedOption = useStore(
     (state) => state.setRadioSelectedOption,
   );
@@ -19,21 +20,28 @@ const Question = (props) => {
   );
 
   const onRadioButtonClick = (optionId) => {
+    if (props.isFinished) return;
     setRadioSelectedOption(props.question.id, optionId);
   };
 
   const onCheckboxButtonClick = (optionId) => {
+    if (props.isFinished) return;
     setCheckboxSelectedOption(props.question.id, optionId);
   };
 
   if (questionType === "radio") {
     return (
       <div className="flex grow flex-col gap-2 rounded-sm border px-6 py-4">
+        {props.isFinished && (
+          <p>Ответ, который был правильным выделен синим цветом</p>
+        )}
         {props.question.options.map((option, index) => (
           <RadioButton
+            disabled={props.isFinished}
             text={option.option_text}
             key={index}
             active={selectedOptions[props.question.id] === option.id}
+            correct={correctAnswers[props.question.id] === option.id}
             onClick={() => onRadioButtonClick(option.id)}
           />
         ))}
@@ -44,11 +52,16 @@ const Question = (props) => {
   if (questionType === "checkbox") {
     return (
       <div className="flex grow flex-col gap-2 rounded-sm border px-6 py-4">
+        {props.isFinished && (
+          <p>Ответы, которые были правильными выделены синим цветом</p>
+        )}
         {props.question.options.map((option, index) => (
           <Checkbox
+            disabled={props.isFinished}
             text={option.option_text}
             key={index}
             active={selectedOptions[props.question.id]?.includes(option.id)}
+            correct={correctAnswers[props.question.id]?.includes(option.id)}
             onClick={() => onCheckboxButtonClick(option.id)}
           />
         ))}
@@ -59,9 +72,20 @@ const Question = (props) => {
   if (questionType === "input") {
     return (
       <div className="flex grow flex-col gap-2 rounded-sm border px-6 py-4">
+        {props.isFinished && (
+          <p>
+            Правильный ответ:{" "}
+            <span className="font-semibold">
+              {correctAnswers[props.question.id]}
+            </span>
+          </p>
+        )}
         <InputText
+          disabled={props.isFinished}
+          className={props.isFinished && "hover:border-neutral-300"}
           value={selectedOptions[props.question.id] || ""}
           onChange={(e) => onRadioButtonClick(e.target.value)}
+          placeholder={"Ответ..."}
         />
       </div>
     );
