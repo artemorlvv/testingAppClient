@@ -7,8 +7,11 @@ import Auth from "./pages/Auth";
 import AuthApi from "./api/AuthApi";
 import Test from "./pages/Test";
 import Layout from "./components/Layout";
+import MyTests from "./pages/MyTests";
+import CreateTest from "./pages/CreateTest";
 
 const App = () => {
+  const role = useStore((state) => state.role);
   const isAuth = useStore((state) => state.isAuth);
   const setIsAuth = useStore((state) => state.setIsAuth);
   const setRole = useStore((state) => state.setRole);
@@ -38,6 +41,12 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="test/:testId" element={<Test />} />
+        {role === "TEACHER" && (
+          <>
+            <Route path="test/my" element={<MyTests />} />
+            <Route path="test/create" element={<CreateTest />} />
+          </>
+        )}
       </Route>
     </Routes>
   );

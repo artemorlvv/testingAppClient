@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import UserButton from "./UserButton";
 import { useStore } from "../store";
 import AuthApi from "../api/AuthApi";
+import Button from "../ui/Button";
 
 const Header = () => {
   const setIsAuth = useStore((state) => state.setIsAuth);
@@ -25,7 +26,17 @@ const Header = () => {
       >
         Главная
       </Link>
-      <UserButton onLogout={logout} fullName={fullName} />
+      <div className="wrap flex items-center gap-2">
+        {role === "TEACHER" && (
+          <Link
+            to="test/my"
+            className="decoration-2 underline-offset-2 hover:underline"
+          >
+            Мои тесты
+          </Link>
+        )}
+        <UserButton onLogout={logout} fullName={fullName} />
+      </div>
     </div>
   );
 };
