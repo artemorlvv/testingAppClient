@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 import deleteImg from "../assets/delete.svg";
 import arrowImg from "../assets/arrow.svg";
 
-const RadioQuestionCreate = (props) => {
+const CheckboxQuestionCreate = (props) => {
   return (
     <div className="flex flex-col gap-2">
       <p className="">Варианты ответов:</p>
@@ -16,11 +16,10 @@ const RadioQuestionCreate = (props) => {
             onClick={() => props.onClick(index)}
           >
             <div
-              className={`rounded-full border-2 border-neutral-400 p-3 ${option.is_correct && "bg-blue-400"}`}
+              className={`rounded-sm border-2 border-neutral-400 p-3 ${option.is_correct && "bg-blue-400"}`}
             />
           </button>
           <InputText
-            className={"w-full"}
             value={option.option_text}
             onChange={(e) => props.onChange(index, e.target.value)}
           />
@@ -43,4 +42,4 @@ const RadioQuestionCreate = (props) => {
   );
 };
 
-export default RadioQuestionCreate;
+export default CheckboxQuestionCreate;

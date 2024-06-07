@@ -12,7 +12,7 @@ const QuestionsListCreate = (props) => {
   };
 
   return (
-    <div className="flex h-min flex-col gap-2 rounded-sm border p-4">
+    <div className="flex h-min flex-col gap-2 rounded-sm border p-4 md:min-w-[250px]">
       <p className="">Список задач:</p>
       {Array.from({ length: props.length }, (_, index) => (
         <Button
@@ -26,7 +26,10 @@ const QuestionsListCreate = (props) => {
         >{`Задача №${index + 1}`}</Button>
       ))}
       <div className="relative">
-        <ButtonAdd onClick={() => setShowAddModal(!showAddModal)} />
+        <ButtonAdd
+          className={"flex w-full items-center justify-center"}
+          onClick={() => setShowAddModal(!showAddModal)}
+        />
         {showAddModal && (
           <div className="absolute right-0 top-full mt-1 flex min-w-[230px] flex-col gap-2 rounded-sm bg-neutral-200 p-3">
             <Button
