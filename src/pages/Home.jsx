@@ -10,9 +10,6 @@ const Home = () => {
 
   return (
     <div>
-      <p>Логин: {login}</p>
-      <p>Роль: {role}</p>
-      <p>Имя и фамилия: {fullName}</p>
       <TestsList />
     </div>
   );

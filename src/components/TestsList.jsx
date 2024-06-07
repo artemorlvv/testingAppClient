@@ -12,7 +12,7 @@ const TestsList = () => {
     fetchTests();
   }, []);
   return (
-    <div className="m-2 flex flex-col gap-2">
+    <div className="flex flex-col gap-2 px-4 py-2">
       {tests.map((test) => (
         <Link
           to={"test/" + test.id}
