@@ -9,6 +9,8 @@ import Test from "./pages/Test";
 import Layout from "./components/Layout";
 import MyTests from "./pages/MyTests";
 import CreateTest from "./pages/CreateTest";
+import NotFound from "./pages/NotFound";
+import TestResults from "./pages/TestResults";
 
 const App = () => {
   const role = useStore((state) => state.role);
@@ -45,8 +47,10 @@ const App = () => {
           <>
             <Route path="test/my" element={<MyTests />} />
             <Route path="test/create" element={<CreateTest />} />
+            <Route path="test/results/:id" element={<TestResults />} />
           </>
         )}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

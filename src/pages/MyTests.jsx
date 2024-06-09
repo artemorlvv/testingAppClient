@@ -70,7 +70,12 @@ const MyTests = () => {
                     {test.id}
                   </td>
                   <td className="border border-neutral-400 px-[0.8em] py-[0.4em]">
-                    {test.title}
+                    <Link
+                      to={"/test/results/" + test.id}
+                      className="text-blue-500 hover:underline"
+                    >
+                      {test.title}
+                    </Link>
                   </td>
                   <td className="border border-neutral-400 px-[0.8em] py-[0.4em]">
                     <Button onClick={() => onShare(test.id)}>

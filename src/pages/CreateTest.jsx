@@ -137,54 +137,74 @@ const CreateTest = () => {
   const handleCreateTest = async () => {
     if (loading) return;
     setLoading(true);
+    let isError = false;
     try {
       if (title.trim() === "") return createError("Введите название теста");
       questions.forEach((question, index) => {
-        if (question.question_text.trim() === "")
+        if (question.question_text.trim() === "") {
+          isError = true;
           return createError(`Введите текст вопроса в задаче №${index + 1}`);
+        }
         if (question.question_type === "input") {
-          if (question.correct_answer.trim() === "")
+          if (question.correct_answer.trim() === "") {
+            isError = true;
             return createError(
               `Введите правильный ответ в задаче №${index + 1}`,
             );
+          }
         } else if (question.question_type === "radio") {
-          if (question.options.length < 2)
+          if (question.options.length < 2) {
+            isError = true;
             return createError(
               `В задаче №${index + 1} менее двух вариантов ответов`,
             );
-          const hasCorrectOption = question.options.some(
-            (option) => option.is_correct === true,
-          );
+          }
           question.options.forEach((option) => {
-            if (option.option_text.trim() === "")
+            if (option.option_text.trim() === "") {
+              isError = true;
               return createError(
                 `В задаче №${index + 1} присутствуют пустые варианты ответов`,
               );
+            }
           });
-          if (!hasCorrectOption)
+          if (isError) return;
+          const hasCorrectOption = question.options.some(
+            (option) => option.is_correct === true,
+          );
+          if (!hasCorrectOption) {
+            isError = true;
             return createError(
               `В задаче №${index + 1} не выбран правильный ответ`,
             );
+          }
         } else if (question.question_type === "checkbox") {
-          if (question.options.length < 2)
+          if (question.options.length < 2) {
+            isError = true;
             return createError(
               `В задаче №${index + 1} менее двух вариантов ответов`,
             );
+          }
           question.options.forEach((option) => {
-            if (option.option_text.trim() === "")
+            if (option.option_text.trim() === "") {
+              isError = true;
               return createError(
                 `В задаче №${index + 1} присутствуют пустые варианты ответов`,
               );
+            }
           });
+          if (isError) return;
           const hasCorrectOption = question.options.some(
             (option) => option.is_correct === true,
           );
-          if (!hasCorrectOption)
+          if (!hasCorrectOption) {
+            isError = true;
             return createError(
               `В задаче №${index + 1} не выбраны правильныe ответы`,
             );
+          }
         }
       });
+      if (isError) return;
       const res = await authApi.post(
         "/api/test/create",
         { title, questions },
@@ -227,31 +247,32 @@ const CreateTest = () => {
           <Button onClick={handleCreateTest}>Опубликовать</Button>
         )}
       </div>
-      <div className="flex flex-col gap-2 rounded-sm border px-4 py-2">
-        {questions[currentQuestionNumber] ? (
-          <>
-            <div className="flex gap-2">
-              <p className="w-max self-end border-b-2 border-neutral-800">{`Задача №${currentQuestionNumber + 1}`}</p>
-              <Button
-                className="bg-red-400 text-base hover:bg-red-500"
-                onClick={handleDeleteQuestion}
-              >
-                Удалить
-              </Button>
-            </div>
-            <InputText
-              className={"w-full max-w-[750px]"}
-              placeholder="Текст задачи..."
-              value={questions[currentQuestionNumber]?.question_text}
-              onChange={(e) => handleQuestionTextChange(e.target.value)}
-            />
-          </>
-        ) : (
-          <p>Создайте первый вопрос</p>
-        )}
-      </div>
+      {questions[currentQuestionNumber] && (
+        <div className="flex flex-col gap-2 rounded-sm border px-4 py-2">
+          <div className="flex gap-2">
+            <p className="w-max self-end border-b-2 border-neutral-800">{`Задача №${currentQuestionNumber + 1}`}</p>
+            <Button
+              className="bg-red-400 text-base hover:bg-red-500"
+              onClick={handleDeleteQuestion}
+            >
+              Удалить
+            </Button>
+          </div>
+          <InputText
+            className={"w-full max-w-[750px]"}
+            placeholder="Текст задачи..."
+            value={questions[currentQuestionNumber]?.question_text}
+            onChange={(e) => handleQuestionTextChange(e.target.value)}
+          />
+        </div>
+      )}
       <div className="flex grow flex-col gap-2 sm:flex-row">
         <div className="flex grow flex-col gap-2 rounded-sm border px-4 py-2">
+          {!questions[currentQuestionNumber] && (
+            <div className="flex grow items-center justify-center">
+              <p>Создайте первый вопрос</p>
+            </div>
+          )}
           {questions[currentQuestionNumber]?.question_type === "input" ? (
             <>
               <p>Правильный ответ:</p>
