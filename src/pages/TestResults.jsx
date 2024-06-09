@@ -4,10 +4,13 @@ import { useParams } from "react-router-dom";
 import { authApi } from "../api";
 import BorderContainer from "../components/BorderContainer";
 import ResultsTable from "../components/ResultsTable";
+import InputText from "../ui/InputText";
+import Button from "../ui/Button";
 
 const TestResults = (props) => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetchingResults, setIsFetchingResults] = useState(false);
   const [testInfo, setTestInfo] = useState(null);
   const [results, setResults] = useState(null);
   const [searchParams, setSearchParams] = useState({
@@ -17,6 +20,61 @@ const TestResults = (props) => {
     dateOrder: "DESC",
     scoreOrder: "",
   });
+
+  const handleClear = () => {
+    const updatedSearchParams = { ...searchParams };
+    updatedSearchParams.first_name = "";
+    updatedSearchParams.second_name = "";
+    updatedSearchParams.login = "";
+    setSearchParams(updatedSearchParams);
+  };
+
+  const fetchResults = async (data) => {
+    if (isLoading) return;
+    if (isFetchingResults) return;
+    try {
+      setIsFetchingResults(true);
+      const res = await authApi.post(
+        "/api/test/results/" + id,
+        data || searchParams,
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(res.data);
+      setResults(res.data.results);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsFetchingResults(false);
+    }
+  };
+
+  const handleSearchInputChange = (e) => {
+    const updatedSearchParams = { ...searchParams };
+    updatedSearchParams[e.target.name] = e.target.value;
+    setSearchParams(updatedSearchParams);
+  };
+
+  const handleScoreClick = () => {
+    const updatedSearchParams = { ...searchParams };
+    updatedSearchParams.dateOrder = "";
+    if (updatedSearchParams.scoreOrder === "DESC")
+      updatedSearchParams.scoreOrder = "ASC";
+    else updatedSearchParams.scoreOrder = "DESC";
+    setSearchParams(updatedSearchParams);
+    fetchResults(updatedSearchParams);
+  };
+
+  const handleDateClick = () => {
+    const updatedSearchParams = { ...searchParams };
+    updatedSearchParams.scoreOrder = "";
+    if (updatedSearchParams.dateOrder === "DESC")
+      updatedSearchParams.dateOrder = "ASC";
+    else updatedSearchParams.dateOrder = "DESC";
+    setSearchParams(updatedSearchParams);
+    fetchResults(updatedSearchParams);
+  };
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -44,16 +102,60 @@ const TestResults = (props) => {
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
       <div className="flex gap-2">
-        <BorderContainer>{`Название теста: ${testInfo.testTitle}`}</BorderContainer>
         <BorderContainer>
-          {`Количество вопросов: ${testInfo.questionCount}`}
+          <p>
+            <span className="mr-2 text-neutral-500">Название теста:</span>
+            {testInfo.testTitle}
+          </p>
         </BorderContainer>
         <BorderContainer>
-          {`Количество сдавших тест: ${testInfo.questionCount}`}
+          <p>
+            <span className="mr-2 text-neutral-500">Количество вопросов:</span>
+            {testInfo.questionCount}
+          </p>
+        </BorderContainer>
+        <BorderContainer>
+          <p>
+            <span className="mr-2 text-neutral-500">
+              Количество сдавших тест:
+            </span>
+            {testInfo.passedCount}
+          </p>
         </BorderContainer>
       </div>
-      <div>
-        <ResultsTable results={results} />
+      <p className="mt-2 text-2xl">Результаты:</p>
+      <div className="flex items-center gap-2">
+        <InputText
+          placeholder="Логин..."
+          value={searchParams.login}
+          name="login"
+          onChange={handleSearchInputChange}
+        />
+        <InputText
+          placeholder="Имя..."
+          value={searchParams.first_name}
+          name="first_name"
+          onChange={handleSearchInputChange}
+        />
+        <InputText
+          placeholder="Фамилия..."
+          value={searchParams.second_name}
+          name="second_name"
+          onChange={handleSearchInputChange}
+        />
+        <Button onClick={() => fetchResults()}>Поиск</Button>
+        <Button onClick={handleClear}>Очистить</Button>
+      </div>
+      <div className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <ResultsTable
+            results={results}
+            dateOrder={searchParams.dateOrder}
+            scoreOrder={searchParams.scoreOrder}
+            onScoreClick={handleScoreClick}
+            onDateClick={handleDateClick}
+          />
+        </div>
       </div>
     </div>
   );
