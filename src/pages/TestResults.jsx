@@ -6,9 +6,11 @@ import BorderContainer from "../components/BorderContainer";
 import ResultsTable from "../components/ResultsTable";
 import InputText from "../ui/InputText";
 import Button from "../ui/Button";
+import PageNavigation from "../components/PageNavigation";
 
 const TestResults = (props) => {
   const { id } = useParams();
+  const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingResults, setIsFetchingResults] = useState(false);
   const [testInfo, setTestInfo] = useState(null);
@@ -20,6 +22,7 @@ const TestResults = (props) => {
     dateOrder: "DESC",
     scoreOrder: "",
   });
+  const [totalPages, setTotalPages] = useState(0);
 
   const handleClear = () => {
     const updatedSearchParams = { ...searchParams };
@@ -29,25 +32,32 @@ const TestResults = (props) => {
     setSearchParams(updatedSearchParams);
   };
 
-  const fetchResults = async (data) => {
+  const fetchResults = async (data, pageNum) => {
     if (isLoading) return;
     if (isFetchingResults) return;
     try {
       setIsFetchingResults(true);
       const res = await authApi.post(
-        "/api/test/results/" + id,
+        `/api/test/results/${id}?page=${pageNum || page}`,
         data || searchParams,
         {
           withCredentials: true,
         },
       );
-      console.log(res.data);
       setResults(res.data.results);
+      setTotalPages(res.data.totalPages);
+      setPage(pageNum || 1);
     } catch (e) {
       console.log(e);
     } finally {
       setIsFetchingResults(false);
     }
+  };
+
+  const handlePageClick = (pageNum) => {
+    if (isLoading) return;
+    if (isFetchingResults) return;
+    fetchResults(searchParams, pageNum);
   };
 
   const handleSearchInputChange = (e) => {
@@ -80,12 +90,13 @@ const TestResults = (props) => {
     const fetchResults = async () => {
       try {
         setIsLoading(true);
-        const res = await authApi.get("/api/test/results/" + id, {
+        const res = await authApi.get(`/api/test/results/${id}`, {
           withCredentials: true,
         });
-        console.log(res.data);
         setTestInfo(res.data);
         setResults(res.data.results);
+        setTotalPages(res.data.totalPages);
+        setPage(1);
       } catch (e) {
         console.log(e);
       } finally {
@@ -157,6 +168,13 @@ const TestResults = (props) => {
           />
         </div>
       </div>
+      {totalPages > 1 && (
+        <PageNavigation
+          totalPages={totalPages}
+          currentPage={page}
+          onPageClick={handlePageClick}
+        />
+      )}
     </div>
   );
 };

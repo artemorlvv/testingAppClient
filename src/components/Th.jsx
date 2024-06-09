@@ -5,7 +5,7 @@ const Th = (props) => {
   return (
     <th
       className={twMerge(
-        "border border-b-2 border-neutral-500 px-[0.8em] py-[0.4em]",
+        "w-[15%] border border-b-2 border-neutral-500 px-[0.8em] py-[0.4em]",
         props.className,
       )}
     >

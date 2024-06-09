@@ -32,7 +32,7 @@ const ResultsTable = (props) => {
               </Button>
             </div>
           </Th>
-          <Th className="min-w-[185px]">
+          <Th className="">
             <div className="flex justify-center">
               <Button
                 className={
