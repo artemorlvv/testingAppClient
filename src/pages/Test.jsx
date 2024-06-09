@@ -73,6 +73,8 @@ const Test = () => {
 
   if (loading) return <p>loading</p>;
 
+  if (!questions.length) return <div>Тест не найден</div>;
+
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
       <div className="rounded-sm border px-6 py-4">

@@ -3,8 +3,10 @@ import InputText from "../ui/InputText";
 import Button from "../ui/Button";
 import AuthApi from "../api/AuthApi";
 import { useStore } from "../store";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const setIsAuth = useStore((state) => state.setIsAuth);
   const setRole = useStore((state) => state.setRole);
   const setLogin = useStore((state) => state.setLogin);
@@ -57,6 +59,7 @@ const Auth = () => {
       setLogin(res.data.login);
       setFullName(res.data.first_name + " " + res.data.second_name);
       setIsAuth(true);
+      navigate("/");
     } catch (e) {
       console.log(e);
       const errMessage = e?.response?.data?.message;

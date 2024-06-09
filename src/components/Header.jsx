@@ -4,6 +4,9 @@ import UserButton from "./UserButton";
 import { useStore } from "../store";
 import AuthApi from "../api/AuthApi";
 import Button from "../ui/Button";
+import adminImg from "../assets/admin.svg";
+// import testImg from "../assets/test.svg";
+import testImg from "../assets/test2.svg";
 
 const Header = () => {
   const setIsAuth = useStore((state) => state.setIsAuth);
@@ -27,14 +30,21 @@ const Header = () => {
         Главная
       </Link>
       <div className="wrap flex items-center gap-2">
-        {role === "TEACHER" && (
-          <Link
-            to="test/my"
-            className="decoration-2 underline-offset-2 hover:underline"
-          >
-            Мои тесты
+        {role === "ADMIN" && (
+          <Link to="/admin">
+            <Button className="bg-neutral-200 p-2 hover:bg-neutral-300">
+              <img src={adminImg} />
+            </Button>
           </Link>
         )}
+        {role === "TEACHER" ||
+          (role === "ADMIN" && (
+            <Link to="/test/my">
+              <Button className="bg-neutral-200 p-2 hover:bg-neutral-300">
+                <img src={testImg} />
+              </Button>
+            </Link>
+          ))}
         <UserButton onLogout={logout} fullName={fullName} />
       </div>
     </div>

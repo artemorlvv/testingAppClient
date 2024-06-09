@@ -18,6 +18,7 @@ const MyTests = () => {
           { withCredentials: true },
         );
         setTests(res.data.tests);
+        console.log(res.data);
       } catch (e) {
         console.log(e);
       } finally {

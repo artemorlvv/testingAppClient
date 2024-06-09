@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { useStore } from "./store";
@@ -11,6 +10,7 @@ import MyTests from "./pages/MyTests";
 import CreateTest from "./pages/CreateTest";
 import NotFound from "./pages/NotFound";
 import TestResults from "./pages/TestResults";
+import AdminPage from "./pages/AdminPage";
 
 const App = () => {
   const role = useStore((state) => state.role);
@@ -42,14 +42,20 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="test/:testId" element={<Test />} />
-        {role === "TEACHER" && (
+        {role === "TEACHER" ||
+          (role === "ADMIN" && (
+            <>
+              <Route path="test/my" element={<MyTests />} />
+              <Route path="test/create" element={<CreateTest />} />
+              <Route path="test/results/:id" element={<TestResults />} />
+            </>
+          ))}
+        {role === "ADMIN" && (
           <>
-            <Route path="test/my" element={<MyTests />} />
-            <Route path="test/create" element={<CreateTest />} />
-            <Route path="test/results/:id" element={<TestResults />} />
+            <Route path="admin" element={<AdminPage />} />
           </>
         )}
+        <Route path="test/:testId" element={<Test />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

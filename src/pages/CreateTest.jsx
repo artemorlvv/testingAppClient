@@ -6,6 +6,7 @@ import RadioQuestionCreate from "../components/RadioQuestionCreate";
 import CheckboxQuestionCreate from "../components/CheckboxQuestionCreate";
 import closeImg from "../assets/close.svg";
 import { authApi } from "../api";
+import { Link } from "react-router-dom";
 
 const CreateTest = () => {
   const [title, setTitle] = useState("");
@@ -13,6 +14,7 @@ const CreateTest = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [createdId, setCreatedId] = useState(null);
 
   const onCreateQuestion = (type) => {
     if (type === "input") {
@@ -210,7 +212,7 @@ const CreateTest = () => {
         { title, questions },
         { withCredentials: true },
       );
-      console.log(res);
+      setCreatedId(res.data.id);
     } catch (e) {
       console.log(e);
     } finally {
@@ -220,6 +222,25 @@ const CreateTest = () => {
 
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
+      {createdId && (
+        <div className="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-neutral-400/50">
+          <div className="flex flex-col gap-2 rounded-lg bg-white p-4">
+            <p className="mb-2 text-2xl">Тест успешно создан</p>
+            <Link to={`/test/${createdId}`}>
+              <Button className={"w-full"}>Пройти тест</Button>
+            </Link>
+            <Link to={`/test/results/${createdId}`}>
+              <Button className={"w-full"}>Страница теста</Button>
+            </Link>
+            <Link to="/test/my">
+              <Button className={"w-full"}>Мои тесты</Button>
+            </Link>
+            <Link to="/">
+              <Button className={"w-full"}>На главную</Button>
+            </Link>
+          </div>
+        </div>
+      )}
       {error && (
         <div className="absolute left-1/2 top-4 flex w-full max-w-[400px] -translate-x-1/2 items-center justify-between gap-2 rounded-md bg-red-400 py-2 pl-4 pr-2 text-white">
           <div className="flex flex-col">
