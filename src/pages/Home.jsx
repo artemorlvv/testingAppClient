@@ -7,11 +7,16 @@ import sortAscImg from "../assets/sort_asc.svg";
 import InputText from "../ui/InputText";
 import Dropdown from "../components/Dropdown";
 import { authApi } from "../api";
+import PageNavigation from "../components/PageNavigation";
+import Td from "../components/Td";
+import { formatDate } from "../utils";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [tests, setTests] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortParams, setSortParams] = useState({
     title: "",
@@ -46,6 +51,7 @@ const Home = () => {
       const res = await authApi.get(url, { withCredentials: true });
       setTests(res.data.tests);
       setTotalPages(res.data.totalPages);
+      setTotalResults(res.data.count);
       setCurrentPage(pageNum || 1);
     } catch (e) {
       console.log(e);
@@ -67,6 +73,7 @@ const Home = () => {
       updatedSortParams.dateOrder = "DESC";
     }
     setSortParams(updatedSortParams);
+    fetchTests(updatedSortParams);
   };
 
   const handleInputChange = (e) => {
@@ -93,6 +100,7 @@ const Home = () => {
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
       <h1 className="mb-2 text-2xl">Тесты</h1>
+      <p className="text-xl">{`Найдено: ${totalResults}`}</p>
       <div className="flex items-center gap-2">
         <InputText
           placeholder="Название..."
@@ -146,11 +154,34 @@ const Home = () => {
                 </Button>
               </div>
             </Th>
-            <Th>Результат</Th>
+            <Th>Правильных ответов</Th>
             <Th>Ссылка</Th>
           </tr>
         </thead>
-        {tests.length > 0 && <tbody></tbody>}
+        {tests.length > 0 && (
+          <tbody>
+            {tests.map((test) => (
+              <tr key={test.id}>
+                <Td>{test.title}</Td>
+                <Td>{`${test.User.first_name} ${test.User.second_name}`}</Td>
+                <Td>{formatDate(test.created_at)}</Td>
+                <Td>
+                  {test.Results[0]
+                    ? `${test.Results[0].score} из ${test.Questions.length}`
+                    : "Тест не пройден"}
+                </Td>
+                <Td>
+                  <Link
+                    className="text-blue-500 hover:underline"
+                    to={`/test/${test.id}`}
+                  >
+                    Перейти
+                  </Link>
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
       {!tests.length && (
         <div className="flex w-full justify-center">
