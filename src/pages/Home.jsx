@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStore } from "../store";
 import Button from "../ui/Button";
 import Th from "../components/Th";
@@ -11,6 +11,8 @@ import PageNavigation from "../components/PageNavigation";
 import Td from "../components/Td";
 import { formatDate } from "../utils";
 import { Link } from "react-router-dom";
+import Loading from "../components/Loading";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 const Home = () => {
   const [tests, setTests] = useState([]);
@@ -97,6 +99,10 @@ const Home = () => {
     setSortParams(updatedSortParams);
   };
 
+  useEffect(() => {
+    fetchTests();
+  }, []);
+
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
       <h1 className="mb-2 text-2xl">Тесты</h1>
@@ -128,7 +134,17 @@ const Home = () => {
           onChange={handleSortRoleChange}
         />
 
-        <Button onClick={() => fetchTests()}>Поиск</Button>
+        <Button
+          onClick={() => fetchTests()}
+          className={"relative overflow-hidden"}
+        >
+          <span>Поиск</span>
+          {isFetching && (
+            <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-blue-400">
+              <LoadingAnimation className="invert" />
+            </div>
+          )}
+        </Button>
 
         <Button onClick={handleClear}>Очистить</Button>
       </div>
@@ -183,7 +199,8 @@ const Home = () => {
           </tbody>
         )}
       </table>
-      {!tests.length && (
+
+      {!tests.length && !isFetching && (
         <div className="flex w-full justify-center">
           <p>Тесты не найдены</p>
         </div>

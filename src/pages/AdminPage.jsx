@@ -15,6 +15,7 @@ const AdminPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortParams, setSortParams] = useState({
     login: "",
@@ -55,7 +56,7 @@ const AdminPage = () => {
       const res = await authApi.get(url, { withCredentials: true });
       setUsers(res.data.users);
       setTotalPages(res.data.totalPages);
-
+      setTotalUsers(res.data.count);
       setCurrentPage(pageNum || 1);
     } catch (e) {
       console.log(e);
@@ -123,7 +124,7 @@ const AdminPage = () => {
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
       <h1 className="text-2xl">Панель администратора</h1>
-      <h2 className="mt-2 text-xl">Пользователи:</h2>
+      <h2 className="mt-2 text-xl">{`Найдено пользователей: ${totalUsers}`}</h2>
       <div className="flex items-center gap-2">
         <InputText
           placeholder="Логин..."
@@ -143,18 +144,16 @@ const AdminPage = () => {
           value={sortParams.second_name}
           onChange={handleInputChange}
         />
-        <div className="flex items-center gap-2">
-          <p>Роль:</p>
-          <Dropdown
-            options={roles}
-            active={sortParams.role}
-            nullValue={"Все"}
-            onChange={handleSortRoleChange}
-          />
-        </div>
-        <Button onClick={() => fetchUsers()} className={"ml-auto"}>
-          Поиск
-        </Button>
+
+        <Dropdown
+          className="min-w-[187px]"
+          options={roles}
+          active={sortParams.role}
+          nullValue={"Все"}
+          onChange={handleSortRoleChange}
+        />
+
+        <Button onClick={() => fetchUsers()}>Поиск</Button>
         <Button onClick={handleClear}>Очистить</Button>
       </div>
       <table>
