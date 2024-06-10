@@ -21,6 +21,7 @@ const Header = () => {
       console.log(e);
     }
   };
+
   return (
     <div className="flex flex-wrap items-center justify-between border-b px-4 py-2">
       <Link
@@ -37,14 +38,13 @@ const Header = () => {
             </Button>
           </Link>
         )}
-        {role === "TEACHER" ||
-          (role === "ADMIN" && (
-            <Link to="/test/my">
-              <Button className="bg-neutral-200 p-2 hover:bg-neutral-300">
-                <img src={testImg} />
-              </Button>
-            </Link>
-          ))}
+        {(role === "TEACHER" || role === "ADMIN") && (
+          <Link to="/test/my">
+            <Button className="bg-neutral-200 p-2 hover:bg-neutral-300">
+              <img src={testImg} />
+            </Button>
+          </Link>
+        )}
         <UserButton onLogout={logout} fullName={fullName} />
       </div>
     </div>

@@ -9,6 +9,7 @@ import sortAscImg from "../assets/sort_asc.svg";
 import Button from "../ui/Button";
 import InputText from "../ui/InputText";
 import PageNavigation from "../components/PageNavigation";
+import Dropdown from "../components/Dropdown";
 
 const AdminPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +23,11 @@ const AdminPage = () => {
     role: "",
     dateOrder: "DESC",
   });
+  const roles = {
+    USER: "Пользователь",
+    TEACHER: "Преподаватель",
+    ADMIN: "Администратор",
+  };
 
   const fetchUsers = async (params, pageNum) => {
     if (isLoading) return;
@@ -67,15 +73,11 @@ const AdminPage = () => {
   const handleDateClick = () => {
     if (isLoading) return;
     const updatedSortParams = { ...sortParams };
-    console.log(updatedSortParams);
     if (updatedSortParams.dateOrder === "DESC") {
       updatedSortParams.dateOrder = "ASC";
-      console.log("asc");
     } else {
       updatedSortParams.dateOrder = "DESC";
-      console.log("desc");
     }
-    console.log(updatedSortParams);
     setSortParams(updatedSortParams);
     fetchUsers(updatedSortParams);
   };
@@ -91,6 +93,27 @@ const AdminPage = () => {
 
   const handlePageClick = (num) => {
     fetchUsers(sortParams, num);
+  };
+
+  const handleSortRoleChange = (key) => {
+    const updatedSortParams = { ...sortParams };
+    updatedSortParams.role = key;
+    setSortParams(updatedSortParams);
+  };
+
+  const handleRoleChange = async (index, userId, role) => {
+    try {
+      await authApi.post(
+        "/api/user/change_role",
+        { userId, role },
+        { withCredentials: true },
+      );
+      const updatedUsers = [...users];
+      updatedUsers[index].role = role;
+      setUsers(updatedUsers);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -120,7 +143,18 @@ const AdminPage = () => {
           value={sortParams.second_name}
           onChange={handleInputChange}
         />
-        <Button onClick={() => fetchUsers()}>Поиск</Button>
+        <div className="flex items-center gap-2">
+          <p>Роль:</p>
+          <Dropdown
+            options={roles}
+            active={sortParams.role}
+            nullValue={"Все"}
+            onChange={handleSortRoleChange}
+          />
+        </div>
+        <Button onClick={() => fetchUsers()} className={"ml-auto"}>
+          Поиск
+        </Button>
         <Button onClick={handleClear}>Очистить</Button>
       </div>
       <table>
@@ -158,7 +192,17 @@ const AdminPage = () => {
                 <Td>{user.login}</Td>
                 <Td>{user.first_name}</Td>
                 <Td>{user.second_name}</Td>
-                <Td>{user.role}</Td>
+                <Td>
+                  <div className="flex justify-center">
+                    <Dropdown
+                      options={roles}
+                      active={user.role}
+                      onChange={(role) =>
+                        handleRoleChange(index, user.id, role)
+                      }
+                    />
+                  </div>
+                </Td>
                 <Td>{formatDate(user.registration_date)}</Td>
               </tr>
             ))}
