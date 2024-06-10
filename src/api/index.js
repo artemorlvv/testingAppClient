@@ -1,44 +1,47 @@
-import axios from "axios"
+import axios from "axios";
+const serverUrl =
+  process.env.NODE_ENV === "development"
+    ? import.meta.env.VITE_DEV_SERVER_URL
+    : import.meta.env.VITE_SERVER_URL;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL,
-})
+  baseURL: serverUrl,
+});
 
 const authApi = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL,
-})
+  baseURL: serverUrl,
+});
 
 authApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token")
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 authApi.interceptors.response.use(
   (res) => res,
   async (error) => {
     if (error.response?.status === 401) {
-      const config = error.config
+      const config = error.config;
       if (!config._again) {
-        config._again = true
+        config._again = true;
         try {
-          const response = await axios.get(
-            import.meta.env.VITE_SERVER_URL + "/api/user/refresh",
-            { withCredentials: true }
-          )
-          const newToken = response.data.accessToken
+          const response = await axios.get(serverUrl + "/api/user/refresh", {
+            withCredentials: true,
+          });
+          const newToken = response.data.accessToken;
 
-          localStorage.setItem("token", newToken)
+          localStorage.setItem("token", newToken);
 
-          config.headers.Authorization = `Bearer ${newToken}`
-          return axios(config)
+          config.headers.Authorization = `Bearer ${newToken}`;
+          return axios(config);
         } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError)
+          console.error("Token refresh failed:", refreshError);
         }
       }
     }
-    return Promise.reject(error)
-  }
-)
+    return Promise.reject(error);
+  },
+);
 
-export { api, authApi }
+export { api, authApi };

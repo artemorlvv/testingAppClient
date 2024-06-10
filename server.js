@@ -1,7 +1,9 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,3 +19,5 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
+
+console.log(path.resolve(buildPath, "index.html"));

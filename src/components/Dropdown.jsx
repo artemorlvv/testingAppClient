@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import arrowUpImg from "../assets/arrowUp.svg";
 import Button from "../ui/Button";
+import { twMerge } from "tailwind-merge";
 
 const Dropdown = (props) => {
   const [modalShow, setModalShow] = useState(false);
@@ -8,10 +9,15 @@ const Dropdown = (props) => {
   return (
     <div className="relative">
       <Button
-        className="flex items-center gap-1 bg-neutral-200 text-black hover:bg-neutral-300"
+        className={twMerge(
+          "flex items-center gap-1 bg-neutral-200 text-black hover:bg-neutral-300",
+          props.className,
+        )}
         onClick={() => setModalShow(!modalShow)}
       >
-        <span>{props.options[props.active] || props.nullValue}</span>
+        <p className="w-full text-center">
+          {props.options[props.active] || props.nullValue}
+        </p>
         <img src={arrowUpImg} className={modalShow ? "" : "rotate-180"} />
       </Button>
       {modalShow && (
