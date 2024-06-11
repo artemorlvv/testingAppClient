@@ -147,8 +147,8 @@ const MyTests = () => {
               <tr key={test.id}>
                 <Td>{test.title}</Td>
                 <Td>{formatDate(test.created_at)}</Td>
-                <Td>{test.Questions.length}</Td>
-                <Td>{test.Results.length}</Td>
+                <Td>{test.question_count}</Td>
+                <Td>{test.result_count}</Td>
                 <Td>
                   <Link
                     className="text-blue-500 hover:underline"

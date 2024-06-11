@@ -181,7 +181,7 @@ const Home = () => {
                 <Td>{formatDate(test.created_at)}</Td>
                 <Td>
                   {test.Results[0]
-                    ? `${test.Results[0].score} из ${test.Questions.length}`
+                    ? `${test.Results[0].score} из ${test.question_count}`
                     : "Тест не пройден"}
                 </Td>
                 <Td>
