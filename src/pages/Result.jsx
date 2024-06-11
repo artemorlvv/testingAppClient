@@ -6,12 +6,14 @@ import QuestionText from "../components/QuestionText";
 import Question from "../components/Question";
 import { useStore } from "../store";
 import TestButtons from "../components/TestButtons";
+import BorderContainer from "../components/BorderContainer";
 
-const Test = () => {
-  const { testId } = useParams();
+const Result = () => {
+  const { id } = useParams();
   const [questionNumber, setQuestionNumber] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [testTitle, setTestTitle] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const clearSelectedOptions = useStore((state) => state.clearSelectedOptions);
   const selectedOptions = useStore((state) => state.selectedOptions);
@@ -26,11 +28,12 @@ const Test = () => {
       setLoading(true);
       clearSelectedOptions();
       try {
-        const res = await authApi.get("/api/test/" + testId, {
+        const res = await authApi.get("/api/test/result/" + id, {
           withCredentials: true,
         });
         setQuestions(res.data.questions);
         setTestTitle(res.data.title);
+        setUserInfo(res.data.user);
         setQuestionNumber(0);
         setResult(res.data.result);
         setSelectedOptions(res.data.userAnswers || {});
@@ -43,7 +46,7 @@ const Test = () => {
       }
     };
     fetchTest();
-  }, [testId]);
+  }, [id]);
 
   const onNext = async () => {
     if (questionNumber < questions.length - 1) {
@@ -77,6 +80,12 @@ const Test = () => {
     <div className="flex grow flex-col gap-2 px-4 py-2">
       <div className="rounded-sm border px-6 py-4">
         <h1 className="text-2xl">{testTitle}</h1>
+      </div>
+      <div className="flex gap-2">
+        <BorderContainer>
+          {`${userInfo.first_name} ${userInfo.second_name}`}
+        </BorderContainer>
+        <BorderContainer>{`Логин: ${userInfo.login}`}</BorderContainer>
       </div>
       <QuestionText
         question={questions[questionNumber]}
@@ -116,4 +125,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default Result;

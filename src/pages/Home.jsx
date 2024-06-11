@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useStore } from "../store";
 import Button from "../ui/Button";
 import Th from "../components/Th";
 import sortDescImg from "../assets/sort_desc.svg";
@@ -11,7 +10,6 @@ import PageNavigation from "../components/PageNavigation";
 import Td from "../components/Td";
 import { formatDate } from "../utils";
 import { Link } from "react-router-dom";
-import Loading from "../components/Loading";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 const Home = () => {

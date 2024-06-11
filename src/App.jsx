@@ -11,6 +11,7 @@ import CreateTest from "./pages/CreateTest";
 import NotFound from "./pages/NotFound";
 import TestResults from "./pages/TestResults";
 import AdminPage from "./pages/AdminPage";
+import Result from "./pages/Result";
 
 const App = () => {
   const role = useStore((state) => state.role);
@@ -48,6 +49,7 @@ const App = () => {
               <Route path="test/my" element={<MyTests />} />
               <Route path="test/create" element={<CreateTest />} />
               <Route path="test/results/:id" element={<TestResults />} />
+              <Route path="test/result/:id" element={<Result />} />
             </>
           ))}
         {role === "ADMIN" && (
