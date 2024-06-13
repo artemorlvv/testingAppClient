@@ -43,15 +43,14 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        {role === "TEACHER" ||
-          (role === "ADMIN" && (
-            <>
-              <Route path="test/my" element={<MyTests />} />
-              <Route path="test/create" element={<CreateTest />} />
-              <Route path="test/results/:id" element={<TestResults />} />
-              <Route path="test/result/:id" element={<Result />} />
-            </>
-          ))}
+        {(role === "TEACHER" || role === "ADMIN") && (
+          <>
+            <Route path="test/my" element={<MyTests />} />
+            <Route path="test/create" element={<CreateTest />} />
+            <Route path="test/results/:id" element={<TestResults />} />
+            <Route path="test/result/:id" element={<Result />} />
+          </>
+        )}
         {role === "ADMIN" && (
           <>
             <Route path="admin" element={<AdminPage />} />
