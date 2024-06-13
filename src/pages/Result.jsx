@@ -96,6 +96,7 @@ const Result = () => {
           <Question
             question={questions[questionNumber]}
             isFinished={result !== null}
+            answersVisible={true}
           />
           <TestButtons
             firstQuestion={questionNumber === 0}
@@ -116,6 +117,7 @@ const Result = () => {
             questions={questions}
             onClick={(num) => setQuestionNumber(num)}
             questionNumber={questionNumber}
+            answersVisible={true}
             correctOptions={correctOptions}
             isFinished={result !== null}
           />

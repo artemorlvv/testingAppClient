@@ -7,9 +7,12 @@ import CheckboxQuestionCreate from "../components/CheckboxQuestionCreate";
 import closeImg from "../assets/close.svg";
 import { authApi } from "../api";
 import { Link } from "react-router-dom";
+import BorderContainer from "../components/BorderContainer";
+import Checkbox from "../components/Checkbox";
 
 const CreateTest = () => {
   const [title, setTitle] = useState("");
+  const [answersVisible, setAnswersVisible] = useState(false);
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -209,7 +212,7 @@ const CreateTest = () => {
       if (isError) return;
       const res = await authApi.post(
         "/api/test/create",
-        { title, questions },
+        { title, questions, answers_visible: answersVisible },
         { withCredentials: true },
       );
       setCreatedId(res.data.id);
@@ -327,12 +330,21 @@ const CreateTest = () => {
             />
           ) : null}
         </div>
-        <QuestionsListCreate
-          length={questions.length}
-          current={currentQuestionNumber}
-          onCreate={onCreateQuestion}
-          onClick={(num) => setCurrentQuestionNumber(num)}
-        />
+        <div className="flex flex-col gap-2">
+          <BorderContainer>
+            <Checkbox
+              active={answersVisible}
+              onClick={() => setAnswersVisible(!answersVisible)}
+              text={"Показывать результаты"}
+            />
+          </BorderContainer>
+          <QuestionsListCreate
+            length={questions.length}
+            current={currentQuestionNumber}
+            onCreate={onCreateQuestion}
+            onClick={(num) => setCurrentQuestionNumber(num)}
+          />
+        </div>
       </div>
     </div>
   );

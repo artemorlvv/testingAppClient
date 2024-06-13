@@ -6,12 +6,14 @@ import QuestionText from "../components/QuestionText";
 import Question from "../components/Question";
 import { useStore } from "../store";
 import TestButtons from "../components/TestButtons";
+import BorderContainer from "../components/BorderContainer";
 
 const Test = () => {
   const { testId } = useParams();
   const [questionNumber, setQuestionNumber] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [testTitle, setTestTitle] = useState("");
+  const [answersVisible, setAnswersVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const clearSelectedOptions = useStore((state) => state.clearSelectedOptions);
   const selectedOptions = useStore((state) => state.selectedOptions);
@@ -31,6 +33,7 @@ const Test = () => {
         });
         setQuestions(res.data.questions);
         setTestTitle(res.data.title);
+        setAnswersVisible(res.data.answers_visible);
         setQuestionNumber(0);
         setResult(res.data.result);
         setSelectedOptions(res.data.userAnswers || {});
@@ -71,7 +74,12 @@ const Test = () => {
 
   if (loading) return <p>loading</p>;
 
-  if (!questions.length) return <div>Тест не найден</div>;
+  if (!questions.length)
+    return (
+      <div className="flex grow items-center justify-center text-2xl">
+        Тест не найден
+      </div>
+    );
 
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
@@ -87,6 +95,7 @@ const Test = () => {
           <Question
             question={questions[questionNumber]}
             isFinished={result !== null}
+            answersVisible={answersVisible}
           />
           <TestButtons
             firstQuestion={questionNumber === 0}
@@ -97,18 +106,22 @@ const Test = () => {
           />
         </div>
         <div className="flex flex-col gap-2 sm:min-w-[280px]">
-          {result ? (
+          {result && answersVisible ? (
             <div className="rounded-sm border px-4 py-2">
               <p>Правильных ответов:</p>
               <p>{`${result.score} из ${questions.length}`}</p>
             </div>
           ) : null}
+          {result && !answersVisible && (
+            <BorderContainer>Тест пройден</BorderContainer>
+          )}
           <QuestionsList
             questions={questions}
             onClick={(num) => setQuestionNumber(num)}
             questionNumber={questionNumber}
             correctOptions={correctOptions}
             isFinished={result !== null}
+            answersVisible={answersVisible}
           />
         </div>
       </div>

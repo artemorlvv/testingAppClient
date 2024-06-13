@@ -16,6 +16,9 @@ const AdminPage = () => {
   const [users, setUsers] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortParams, setSortParams] = useState({
     login: "",
@@ -117,12 +120,48 @@ const AdminPage = () => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await authApi.delete("/api/user/" + deleteUserId, {
+        withCredentials: true,
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setShowDeleteModal(false);
+      setIsDeleting(false);
+      fetchUsers();
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
   return (
     <div className="flex grow flex-col gap-2 px-4 py-2">
+      {showDeleteModal && (
+        <div className="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-neutral-300/50">
+          <div className="flex flex-col items-center gap-2 rounded-lg bg-white p-4">
+            <p className="mb-2 max-w-[250px] text-center text-xl">
+              Вы уверены, что хотите удалить этого пользователя?
+            </p>
+            <div className="flex w-full justify-center gap-2">
+              <Button onClick={() => setShowDeleteModal(false)}>
+                Отменить
+              </Button>
+              <Button
+                onClick={handleDeleteUser}
+                className={"bg-red-400 hover:bg-red-500"}
+              >
+                Удалить
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       <h1 className="text-2xl">Панель администратора</h1>
       <h2 className="mt-2 text-xl">{`Найдено пользователей: ${totalUsers}`}</h2>
       <div className="flex items-center gap-2">
@@ -181,6 +220,7 @@ const AdminPage = () => {
                 </Button>
               </div>
             </Th>
+            <Th>Удаление</Th>
           </tr>
         </thead>
         <tbody>
@@ -203,6 +243,17 @@ const AdminPage = () => {
                   </div>
                 </Td>
                 <Td>{formatDate(user.registration_date)}</Td>
+                <Td>
+                  <Button
+                    className={"bg-red-400 hover:bg-red-500"}
+                    onClick={() => {
+                      setDeleteUserId(user.id);
+                      setShowDeleteModal(true);
+                    }}
+                  >
+                    Удалить
+                  </Button>
+                </Td>
               </tr>
             ))}
         </tbody>

@@ -32,7 +32,7 @@ const Question = (props) => {
   if (questionType === "radio") {
     return (
       <div className="flex grow flex-col gap-2 rounded-sm border px-6 py-4">
-        {props.isFinished && (
+        {props.isFinished && props.answersVisible && (
           <p>Ответ, который был правильным выделен синим цветом</p>
         )}
         {props.question.options.map((option, index) => (
@@ -42,6 +42,7 @@ const Question = (props) => {
             key={index}
             active={selectedOptions[props.question.id] === option.id}
             correct={correctAnswers[props.question.id] === option.id}
+            answersVisible={props.answersVisible}
             onClick={() => onRadioButtonClick(option.id)}
           />
         ))}
@@ -52,7 +53,7 @@ const Question = (props) => {
   if (questionType === "checkbox") {
     return (
       <div className="flex grow flex-col gap-2 rounded-sm border px-6 py-4">
-        {props.isFinished && (
+        {props.isFinished && props.answersVisible && (
           <p>Ответы, которые были правильными выделены синим цветом</p>
         )}
         {props.question.options.map((option, index) => (
@@ -62,6 +63,7 @@ const Question = (props) => {
             key={index}
             active={selectedOptions[props.question.id]?.includes(option.id)}
             correct={correctAnswers[props.question.id]?.includes(option.id)}
+            answersVisible={props.answersVisible}
             onClick={() => onCheckboxButtonClick(option.id)}
           />
         ))}
@@ -72,7 +74,7 @@ const Question = (props) => {
   if (questionType === "input") {
     return (
       <div className="flex grow flex-col gap-2 rounded-sm border px-6 py-4">
-        {props.isFinished && (
+        {props.isFinished && props.answersVisible && (
           <p>
             Правильный ответ:{" "}
             <span className="font-semibold">
